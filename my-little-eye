@@ -1,0 +1,36 @@
+#!/usr/bin/ruby
+
+
+require 'gtk3'
+require 'net/http'
+require 'uri'
+
+username = `whoami`.chomp
+hostname = `hostname`.chomp
+name = ARGV.shift
+name ||= "#{username}@#{hostname}"
+
+url = "http://192.168.86.3:8111/update/#{name}"
+puts "Uploading to #{url}"
+
+loop do
+  GC.start
+  sleep 1
+  root = Gdk::Screen.default.root_window
+  pixbuf = root.to_pixbuf *root.geometry
+  small = pixbuf.scale pixbuf.width / 2, pixbuf.height / 2
+  jpeg = small.save "jpeg", quality: "90"
+  puts jpeg.size
+
+  uri = URI.parse url
+
+  http = Net::HTTP.new uri.host, uri.port
+  req = Net::HTTP::Put.new uri.request_uri
+  req.body = jpeg
+  req["Content-Type"] = "image/jpeg"
+  res = http.request req
+  puts res.code
+rescue
+  warn "Problem: #$!"
+  sleep 5
+end

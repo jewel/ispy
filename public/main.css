@@ -1,0 +1,16 @@
+html {
+  background: black;
+  padding: 0;
+  margin: 0;
+}
+
+#images {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100vh;
+  width: 100vw;
+}
+
+#images img {
+  margin: 2px;
+}

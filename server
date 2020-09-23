@@ -1,0 +1,47 @@
+#!/usr/bin/ruby
+
+require 'sinatra'
+require 'json'
+
+set :server, :thin
+
+images = {}
+
+connections = []
+
+put '/update/:name' do
+  name = params[:name]
+  images[ name ] = {
+    time: Time.new,
+    image: request.body.read,
+  }
+
+  Thread.new do
+    recent = images.keys.select do |k|
+      v = images[k]
+      v[:time] + 5 > Time.new
+    end
+    connections.each do |out|
+      out << "event: update\n"
+      out << "data: #{recent.to_json}\n\n"
+    end
+  end
+  "thanks"
+end
+
+get '/' do
+  erb :index
+end
+
+get '/view/:name' do
+  content_type "image/jpeg"
+  images[ params[:name] ][:image]
+end
+
+get '/subscribe' do
+  content_type 'text/event-stream'
+  stream(:keep_open) do |out|
+    connections << out
+    out.callback { connections.delete out }
+  end
+end
