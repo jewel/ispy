@@ -20,7 +20,6 @@ loop do
   pixbuf = root.to_pixbuf *root.geometry
   small = pixbuf.scale pixbuf.width / 2, pixbuf.height / 2
   jpeg = small.save "jpeg", quality: "90"
-  puts jpeg.size
 
   uri = URI.parse url
 
@@ -29,7 +28,6 @@ loop do
   req.body = jpeg
   req["Content-Type"] = "image/jpeg"
   res = http.request req
-  puts res.code
 rescue
   warn "Problem: #$!"
   sleep 5

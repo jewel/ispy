@@ -2,9 +2,10 @@
   <head>
     <title>ispy</title>
     <script src="/client.js"></script>
-    <link rel="stylesheet" href="/main.css"/>
+    <link rel="stylesheet" href="/main.css?_=<%= File.mtime( 'public/main.css' ).to_i %> "/>
   </head>
   <body>
-    <div id="images"></div>
+    <div id="images">
+    </div>
   </body>
 </html>

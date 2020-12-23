@@ -4,6 +4,8 @@ require 'sinatra'
 require 'json'
 
 set :server, :thin
+set :port, 8111
+set :bind, ""
 
 images = {}
 

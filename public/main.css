@@ -13,4 +13,5 @@ html {
 
 #images img {
   margin: 2px;
+  object-fit: contain;
 }
