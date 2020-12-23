@@ -28,6 +28,8 @@ loop do
   req.body = jpeg
   req["Content-Type"] = "image/jpeg"
   res = http.request req
+rescue Gtk::InitError
+  abort "#$!"
 rescue
   warn "Problem: #$!"
   sleep 5
