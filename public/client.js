@@ -18,5 +18,11 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       image.src = "/view/" + name + "?" + Date.now();
     });
+    for( var [key, value] of Object.entries(images) ) {
+      if( names.indexOf( key ) >= 0 )
+        continue;
+      delete images[key];
+      value.parentNode.remove();
+    }
   });
 });
