@@ -9,7 +9,12 @@ document.addEventListener("DOMContentLoaded", function() {
       if( !image ) {
         image = document.createElement('img');
         images[name] = image;
-        container.appendChild(image);
+        var figure = document.createElement('figure');
+        figure.appendChild(image);
+        var caption = document.createElement('figcaption')
+        caption.textContent = name;
+        figure.appendChild(caption);
+        container.appendChild(figure);
       }
       image.src = "/view/" + name + "?" + Date.now();
     });

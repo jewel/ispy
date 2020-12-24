@@ -2,6 +2,7 @@ html {
   background: black;
   padding: 0;
   margin: 0;
+  color: white;
 }
 
 #images {
@@ -11,7 +12,14 @@ html {
   width: 100vw;
 }
 
-#images img {
+#images figure {
   margin: 2px;
+}
+
+#images figcaption {
+  text-align: center;
+}
+
+#images img {
   object-fit: contain;
 }
