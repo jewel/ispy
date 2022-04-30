@@ -6,6 +6,7 @@ require 'json'
 set :server, :thin
 set :port, 8111
 set :bind, ""
+set :logging, false
 
 images = {}
 
@@ -22,6 +23,10 @@ put '/update/:name' do
     recent = images.keys.select do |k|
       v = images[k]
       v[:time] + 5 > Time.new
+    end
+    recent.map! do |k|
+      v = images[k]
+      [k, (v[:time].to_f * 1000).round]
     end
     connections.each do |out|
       out << "event: update\n"
@@ -45,5 +50,17 @@ get '/subscribe' do
   stream(:keep_open) do |out|
     connections << out
     out.callback { connections.delete out }
+  end
+end
+
+get '/active' do
+  recent = images.keys.select do |k|
+    v = images[k]
+    v[:time] + 5 > Time.new
+  end
+  if recent.size > 0
+    "running\n"
+  else
+    "suspend\n"
   end
 end
