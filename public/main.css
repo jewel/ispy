@@ -3,6 +3,7 @@ html {
   padding: 0;
   margin: 0;
   color: white;
+  overflow: hidden;
 }
 
 #images {
@@ -13,13 +14,30 @@ html {
 }
 
 #images figure {
-  margin: 2px;
+  padding: 2px;
+  margin: 0;
+  position: relative;
+}
+
+#images figure img.portrait {
+  position: absolute;
+  top: 0;
+  right: calc(50% - 100px / 2);
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-width: 5px;
+  border-style: solid;
 }
 
 #images figcaption {
   text-align: center;
 }
 
-#images img {
+#images img.screen {
   object-fit: contain;
+  max-width: 100%;
+  border-width: 5px;
+  border-style: solid;
 }
