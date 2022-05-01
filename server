@@ -36,6 +36,22 @@ put '/update/:name' do
   "thanks"
 end
 
+# When the last user disconnects, make sure that an empty update goes out
+Thread.new do
+  loop do
+    sleep 5
+    recent = images.keys.select do |k|
+      v = images[k]
+      v[:time] + 5 > Time.new
+    end
+    next if recent.size > 0
+    connections.each do |out|
+      out << "event: update\n"
+      out << "data: #{recent.to_json}\n\n"
+    end
+  end
+end
+
 get '/' do
   erb :index
 end
