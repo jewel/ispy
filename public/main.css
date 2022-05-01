@@ -1,4 +1,7 @@
-html {
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+
+
+html, body {
   background: black;
   padding: 0;
   margin: 0;
@@ -7,25 +10,27 @@ html {
 }
 
 #images {
-  display: flex;
-  flex-wrap: wrap;
   height: 100vh;
   width: 100vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 5px;
 }
 
 #images figure {
-  padding: 2px;
+  padding: 0;
   margin: 0;
   position: relative;
 }
 
 #images figure img.portrait {
   position: absolute;
-  top: 0;
+  top: 5px;
   right: calc(50% - 100px / 2);
   border-radius: 50%;
-  height: 100px;
-  width: 100px;
+  height: 5vw;
+  width: 5vw;
   object-fit: cover;
   border-width: 5px;
   border-style: solid;
@@ -36,8 +41,33 @@ html {
 }
 
 #images img.screen {
+  box-sizing: border-box;
   object-fit: contain;
   max-width: 100%;
+  max-height: 100%;
   border-width: 5px;
   border-style: solid;
+}
+
+
+.clock {
+  display: inline-block;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  color: black;
+  border-radius: 20%;
+  text-align: center;
+  padding: 20px;
+  font-family: 'Shadows Into Light', cursive;
+  line-height: 1;
+}
+
+.clock .time {
+  font-size: 175px;
+}
+
+.clock .date {
+  font-size: 100px;
 }
