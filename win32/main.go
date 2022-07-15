@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/kbinani/screenshot"
@@ -25,7 +26,11 @@ func main() {
 		panic(err)
 	}
 
-	username := currentUser.Username
+	printed := false
+
+	// Windows has the hostname as part of the username
+	parts := strings.Split(currentUser.Username, "\\")
+	username := parts[len(parts)-1]
 
 	for {
 		n := screenshot.NumActiveDisplays()
@@ -52,6 +57,10 @@ func main() {
 			}
 
 			url := fmt.Sprintf("http://192.168.86.3:8111/update/%s@%s", username, host)
+			if !printed {
+				fmt.Println("Uploading to", url)
+				printed = true
+			}
 			req, _ := http.NewRequest(http.MethodPut, url, buf)
 			if err != nil {
 				fmt.Println(err)
