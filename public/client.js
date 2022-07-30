@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
   var container = document.getElementById("images");
   source.addEventListener("update", function(event) {
     var updates = JSON.parse(event.data);
+    var columnCount = Math.ceil(Math.sqrt(updates.length.toString()));
+    container.style.gridTemplateColumns = "repeat(" + columnCount + ", 1fr)";
     for( var [key, value] of Object.entries(images) ) {
       value.dataset.present = false;
     }
