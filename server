@@ -14,6 +14,7 @@ connections = []
 
 put '/update/:name' do
   name = params[:name]
+  return "no thanks" if name =~ /\Agdm@/
   images[ name ] = {
     time: Time.new,
     image: request.body.read,
