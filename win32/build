@@ -1,0 +1,4 @@
+#!/bin/bash
+GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -o my-little-eye.exe main.go
+
+go build -o my-little-eye main.go
