@@ -10,6 +10,11 @@ hostname = `hostname`.chomp
 name = ARGV.shift
 name ||= "#{username}@#{hostname}"
 
+if username == 'gdm'
+  sleep 1_000_000
+  exit
+end
+
 url = "http://192.168.86.3:8111/update/#{name}"
 puts "Uploading to #{url}"
 
