@@ -4,7 +4,10 @@ document.addEventListener("DOMContentLoaded", function() {
   var container = document.getElementById("images");
   source.addEventListener("update", function(event) {
     var updates = JSON.parse(event.data);
-    var columnCount = Math.ceil(Math.sqrt(updates.length.toString()));
+    var columnCount = Math.ceil(Math.sqrt(updates.length));
+    var rowCount = 1;
+    if( columnCount > 0 )
+      rowCount = Math.ceil(updates.length / columnCount);
     container.style.gridTemplateColumns = "repeat(" + columnCount + ", 1fr)";
     for( var [key, value] of Object.entries(images) ) {
       value.dataset.present = false;
@@ -49,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       image.src = "/view/" + name + "?" + time;
       image.dataset.present = true;
+      image.style.height = "calc(" + (100 / rowCount).toString() + "vh - 5px * " + (rowCount - 1).toString() + ")"
     });
     for( var [key, value] of Object.entries(images) ) {
       if( value.dataset.present == "true" )
@@ -57,6 +61,10 @@ document.addEventListener("DOMContentLoaded", function() {
       value.parentNode.remove();
     }
   });
+
+  var params = new URLSearchParams(window.location.search);
+  if( !params.get('clock') )
+    return;
 
   var two = function(i) {
     return i.toString().padStart( 2, '0' );
