@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
         figure.appendChild(image);
         var parts = name.split("@");
         var kidName = parts[0];
-        // Add a picture if there is one
+        var computerName = parts[1];
+
         if( window.kids && kids[kidName] ) {
           var kid = kids[kidName];
           var portrait = document.createElement('img');
@@ -34,10 +35,16 @@ document.addEventListener("DOMContentLoaded", function() {
           figure.appendChild(portrait);
           image.style.borderColor = kid.color;
         }
-        // otherwise show name
         else {
+          let text = kidName;
+          if(kidName === "kids")
+            text = computerName;
           var caption = document.createElement('figcaption')
-          caption.textContent = name;
+          caption.textContent = text;
+          caption.classList.add("floating");
+          var width = Math.max(5, (text.length / 6) * 10); // Minimum 5vw
+          caption.style.width = width + "vw";
+          caption.style.right = "calc(50% - " + (width / 2) + "vw)";
           figure.appendChild(caption);
         }
         container.appendChild(figure);
