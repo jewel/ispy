@@ -1,15 +1,3 @@
-var colors = [
-	'white',
-	'#ffb5a7',
-	'#ffd6a5',
-	'#fdffb6',
-	'#caffbf',
-	'#9bf6ff',
-	'#a0c4ff',
-	'#bdb2ff',
-	'#ffc6ff'
-];
-
 document.addEventListener("DOMContentLoaded", function() {
   var source = new EventSource('/subscribe');
   var images = {};
@@ -34,20 +22,24 @@ document.addEventListener("DOMContentLoaded", function() {
         images[name] = image;
         var figure = document.createElement('figure');
         figure.appendChild(image);
-	var match = name.match(/^.*(\d+)@/);
-	var display = name;
-	var color = 'white';
-	if( match ) {
-	      	display = match[1];
-		color = colors[parseInt(match[1], 10)];
-	}
-	var number = document.createElement('div');
-	number.classList.add('number');
-	number.style.color = color;
-	number.style.borderColor = color;
-	number.textContent = display;
-	image.style.borderColor = color;
-	figure.appendChild(number);
+        var parts = name.split("@");
+        var kidName = parts[0];
+        // Add a picture if there is one
+        if( window.kids && kids[kidName] ) {
+          var kid = kids[kidName];
+          var portrait = document.createElement('img');
+          portrait.classList.add("portrait");
+          portrait.src = kid.picture;
+          portrait.style.borderColor = kid.color;
+          figure.appendChild(portrait);
+          image.style.borderColor = kid.color;
+        }
+        // otherwise show name
+        else {
+          var caption = document.createElement('figcaption')
+          caption.textContent = name;
+          figure.appendChild(caption);
+        }
         container.appendChild(figure);
 
         // Sort all by name

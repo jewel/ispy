@@ -36,23 +36,6 @@ html, body {
   border-style: solid;
 }
 
-#images figure div.number {
-  position: absolute;
-  top: 5px;
-  right: calc(50% - 100px / 2);
-  border-radius: 50%;
-  background-color: black;
-  border-color: white;
-  color: white;
-  font-size: 50px;
-  text-align: center;
-  height: 5vw;
-  width: 5vw;
-  object-fit: cover;
-  border-width: 5px;
-  border-style: solid;
-}
-
 #images figcaption {
   text-align: center;
 }
