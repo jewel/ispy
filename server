@@ -9,7 +9,7 @@ set :bind, ""
 set :logging, false
 
 images = {}
-
+message_queue = {}
 connections = []
 
 put '/update/:name' do
@@ -19,6 +19,12 @@ put '/update/:name' do
     time: Time.new,
     image: request.body.read,
   }
+
+  # Check if there's a pending action for this user
+  response_data = {}
+  if message_queue[name] && !message_queue[name].empty?
+    response_data = message_queue[name].shift
+  end
 
   Thread.new do
     recent = images.keys.select do |k|
@@ -34,7 +40,75 @@ put '/update/:name' do
       out << "data: #{recent.to_json}\n\n"
     end
   end
-  "thanks"
+
+  content_type "application/json"
+  response_data.to_json
+end
+
+# Admin endpoints for sending messages and suspensions
+post '/admin/message' do
+  begin
+    data = JSON.parse(request.body.read)
+    target = data['target']  # 'all' or specific username@hostname
+    message = data['message']
+
+    if target == 'all'
+      # Only send to recently active computers (within last 5 seconds)
+      recent_computers = images.keys.select do |name|
+        next false if name =~ /\Agdm@/
+        v = images[name]
+        v[:time] + 5 > Time.new
+      end
+
+      recent_computers.each do |name|
+        message_queue[name] ||= []
+        message_queue[name] << { 'message' => message }
+      end
+    else
+      message_queue[target] ||= []
+      message_queue[target] << { 'message' => message }
+    end
+
+    "ok"
+  rescue JSON::ParserError
+    status 400
+    "Invalid JSON"
+  rescue => e
+    status 500
+    "Error: #{e.message}"
+  end
+end
+
+post '/admin/suspend' do
+  begin
+    data = JSON.parse(request.body.read)
+    target = data['target']  # 'all' or specific username@hostname
+
+    if target == 'all'
+      # Only send to recently active computers (within last 5 seconds)
+      recent_computers = images.keys.select do |name|
+        next false if name =~ /\Agdm@/
+        v = images[name]
+        v[:time] + 5 > Time.new
+      end
+
+      recent_computers.each do |name|
+        message_queue[name] ||= []
+        message_queue[name] << { 'suspend' => true }
+      end
+    else
+      message_queue[target] ||= []
+      message_queue[target] << { 'suspend' => true }
+    end
+
+    "ok"
+  rescue JSON::ParserError
+    status 400
+    "Invalid JSON"
+  rescue => e
+    status 500
+    "Error: #{e.message}"
+  end
 end
 
 # When the last user disconnects, make sure that an empty update goes out

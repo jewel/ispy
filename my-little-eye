@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
 
-
 require 'gtk3'
 require 'net/http'
 require 'uri'
+require 'json'
 
 username = `whoami`.chomp
 hostname = `hostname`.chomp
@@ -17,6 +17,41 @@ end
 
 url = "http://192.168.86.3:8111/update/#{name}"
 puts "Uploading to #{url}"
+
+def handle_response(response_body)
+  return unless response_body && !response_body.empty?
+
+  begin
+    data = JSON.parse(response_body)
+
+    if data['message']
+      puts "Displaying message: #{data['message']}"
+      Thread.new do
+        begin
+          Process.spawn("zenity", "--info", "--text=#{data['message']}", "--title=Message", "--width=400", "--height=200")
+        rescue => e
+          puts "Error displaying message: #{e.message}"
+        end
+      end
+    end
+
+    if data['suspend']
+      puts "Suspending computer..."
+      Thread.new do
+        begin
+          sleep 2  # Give a moment for any message to display
+          Process.spawn("systemctl", "suspend")
+        rescue => e
+          puts "Error suspending: #{e.message}"
+        end
+      end
+    end
+  rescue JSON::ParserError
+    # Not JSON, ignore
+  rescue => e
+    puts "Error handling response: #{e.message}"
+  end
+end
 
 loop do
   GC.start
@@ -33,9 +68,12 @@ loop do
   req.body = jpeg
   req["Content-Type"] = "image/jpeg"
   res = http.request req
+
+  # Handle response if it's JSON
+  handle_response(res.body)
 rescue Gtk::InitError
   abort "#$!"
-rescue
-  warn "Problem: #$!"
+rescue => e
+  warn "Problem: #{e.message}"
   sleep 5
 end
