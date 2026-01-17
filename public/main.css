@@ -104,9 +104,9 @@ body.admin-mode #images {
 .message-input-group input[type="text"] {
   width: 200px;
   padding: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  color: black;
   border-radius: 4px;
   font-size: 12px;
 }
@@ -118,7 +118,6 @@ body.admin-mode #images {
 .message-input-group input[type="text"]:focus {
   outline: none;
   border-color: #4CAF50;
-  background: rgba(255, 255, 255, 0.15);
 }
 
 .quick-actions {
